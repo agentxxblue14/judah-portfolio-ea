@@ -5,12 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Judah Katrina Rivera | Executive Assistant</title>
   <meta name="description" content="Proactive Executive Assistant supporting US-based founders and CEOs. Inbox management, calendar scheduling, team coordination, and SOP building.">
+  <meta name="theme-color" content="#1A3C5E">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Judah Katrina Rivera | Executive Assistant">
+  <meta property="og:description" content="AI-savvy Executive Assistant for US founders and CEOs. Inbox, calendar, team coordination, SOPs, and recruiting support.">
+  <meta property="og:image" content="assets/images/profile.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     /* ===== RESET & BASE ===== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: #333;
       line-height: 1.6;
       background: #fff;
@@ -913,9 +922,57 @@
       }
       :root { --section-padding: 60px 0; }
     }
+
+    /* ===== ENHANCEMENTS (Opus 4.8 polish) ===== */
+    h1, h2, h3, .logo, .metric-num { font-family: 'Sora', 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; }
+    .metric-num { font-variant-numeric: tabular-nums; }
+
+    /* Scroll progress bar */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      z-index: 1100; transition: width 0.1s linear;
+    }
+
+    /* Active nav link */
+    .nav-links a.active { color: var(--gold); }
+
+    /* Animated hamburger -> X */
+    .hamburger span { transform-origin: center; }
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Back to top */
+    .to-top {
+      position: fixed; right: 22px; bottom: 22px; width: 46px; height: 46px;
+      border-radius: 50%; background: var(--navy); color: var(--white);
+      border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; line-height: 1; cursor: pointer; opacity: 0; pointer-events: none; z-index: 900;
+      transition: opacity 0.3s ease, transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+      box-shadow: var(--shadow-hover);
+    }
+    .to-top.show { opacity: 1; pointer-events: auto; }
+    .to-top:hover { background: var(--gold); color: var(--navy); transform: translateY(-3px); }
+
+    .service-card, .ai-card, .portfolio-item, .tool-card, .video-card { will-change: transform; }
+
+    /* Accessible focus states */
+    a:focus-visible, button:focus-visible, .faq-question:focus-visible,
+    .contact-form input:focus-visible, .contact-form textarea:focus-visible {
+      outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; scroll-behavior: auto !important; }
+      .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .scroll-progress { transition: none; }
+    }
   </style>
 </head>
 <body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
 
   <!-- NAVBAR -->
   <nav class="navbar" id="navbar">
@@ -929,7 +986,7 @@
         <a href="#testimonials">Testimonials</a>
         <a href="#contact">Contact</a>
       </div>
-      <div class="hamburger" id="hamburger" aria-label="Menu" role="button" tabindex="0">
+      <div class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks" role="button" tabindex="0">
         <span></span><span></span><span></span>
       </div>
     </div>
@@ -949,19 +1006,19 @@
     <div class="container">
       <div class="metrics-grid fade-in">
         <div class="metric-item">
-          <div class="metric-num">4+</div>
+          <div class="metric-num" data-count="4" data-suffix="+">4+</div>
           <div class="metric-label">Years Supporting US CEOs</div>
         </div>
         <div class="metric-item">
-          <div class="metric-num">317</div>
+          <div class="metric-num" data-count="317" data-suffix="">317</div>
           <div class="metric-label">SOPs Recorded & Documented</div>
         </div>
         <div class="metric-item">
-          <div class="metric-num">30+</div>
+          <div class="metric-num" data-count="30" data-suffix="+">30+</div>
           <div class="metric-label">Hours Freed Weekly for Clients</div>
         </div>
         <div class="metric-item">
-          <div class="metric-num">3</div>
+          <div class="metric-num" data-count="3" data-suffix="">3</div>
           <div class="metric-label">US Time Zones Covered Daily</div>
         </div>
       </div>
@@ -1544,6 +1601,8 @@
     <p style="margin-top: 8px; font-size: 0.72rem; color: rgba(255,255,255,0.35);">Built with <span>Claude Code</span> &mdash; because I use AI to ship real work.</p>
   </footer>
 
+  <button class="to-top" id="toTop" aria-label="Back to top">&#8593;</button>
+
   <!-- JAVASCRIPT -->
   <script>
     // Navbar scroll effect
@@ -1635,6 +1694,77 @@
         if (!wasActive) item.classList.add('active');
       });
     });
+
+    // ===== ENHANCEMENTS (Opus 4.8 polish) =====
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Scroll progress bar + back-to-top
+    const scrollProgress = document.getElementById('scrollProgress');
+    const toTop = document.getElementById('toTop');
+    function onScrollEnhance() {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+      if (scrollProgress) scrollProgress.style.width = pct + '%';
+      if (toTop) toTop.classList.toggle('show', window.scrollY > 600);
+    }
+    window.addEventListener('scroll', onScrollEnhance, { passive: true });
+    onScrollEnhance();
+    if (toTop) toTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    });
+
+    // Hamburger -> X + aria state (in sync with existing menu toggle)
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        const open = navLinks.classList.contains('active');
+        hamburger.classList.toggle('active', open);
+        hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }));
+    }
+
+    // Count-up animation for the metrics bar
+    function runCount(el) {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if (isNaN(target)) return;
+      if (prefersReduced) { el.textContent = target + suffix; return; }
+      const dur = 1400, start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    const metricNums = document.querySelectorAll('.metric-num[data-count]');
+    if (metricNums.length) {
+      const countObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { runCount(e.target); countObs.unobserve(e.target); } });
+      }, { threshold: 0.5 });
+      metricNums.forEach(el => countObs.observe(el));
+    }
+
+    // Scrollspy: highlight the active nav link
+    const navAnchors = Array.from(document.querySelectorAll('.nav-links a'));
+    const spySections = navAnchors
+      .map(a => { const h = a.getAttribute('href'); return h && h.startsWith('#') ? document.querySelector(h) : null; })
+      .filter(Boolean);
+    if (spySections.length) {
+      const spyObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+          }
+        });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      spySections.forEach(s => spyObs.observe(s));
+    }
   </script>
 </body>
 </html>
